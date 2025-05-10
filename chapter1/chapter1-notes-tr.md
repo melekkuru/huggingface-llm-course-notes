@@ -5,10 +5,21 @@ Bu bölümde, transformer temelli büyük dil modellerinin (LLM) ne olduğunu, n
 ---
 
 ## 1. Giriş
+## 1. Giriş
 
-...
+Bu kurs, transformer tabanlı büyük dil modellerini (LLM) anlamak ve uygulamak için hazırlanmıştır.
 
----
+• Doğal Dil İşleme (NLP), insan dilini bilgisayarların anlayabileceği şekilde işler.  
+• LLM’ler çok büyük veri kümeleriyle eğitilen modellerdir ve birçok NLP görevini (çeviri, özetleme, soru-cevap, vb.) tek başına gerçekleştirebilir.  
+• Bu kurs, Hugging Face ekosistemindeki araçlar üzerinden uygulamalı örneklerle ilerleyecektir.
+
+Kullanılacak temel araçlar:
+• 🤗 Transformers  
+• 🤗 Datasets  
+• 🤗 Tokenizers  
+• 🤗 Accelerate  
+• Hugging Face Hub
+
 
 ## 2. Doğal Dil İşleme ve Büyük Dil Modelleri
 
@@ -66,4 +77,4 @@ Bu bölümde, transformer temelli büyük dil modellerinin (LLM) ne olduğunu, n
 
 ## 11. Sertifika Sınavı
 
-(Kendin için not: Buradaki sorular gelecekte tekrar için saklanabilir.)
+
