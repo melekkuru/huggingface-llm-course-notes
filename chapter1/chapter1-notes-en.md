@@ -6,9 +6,19 @@ This chapter introduces transformer-based Large Language Models (LLMs), how they
 
 ## 1. Introduction
 
-...
+This course is designed to teach how to understand and apply transformer-based Large Language Models (LLMs).
 
----
+• Natural Language Processing (NLP) is the field of teaching computers to understand human language.  
+• LLMs are models trained on massive amounts of text and can perform many NLP tasks (e.g., translation, summarization, question answering).  
+• The course will take a hands-on approach using Hugging Face tools.
+
+Main tools covered in this course:
+• 🤗 Transformers  
+• 🤗 Datasets  
+• 🤗 Tokenizers  
+• 🤗 Accelerate  
+• Hugging Face Hub
+
 
 ## 2. Natural Language Processing and Large Language Models
 
@@ -66,4 +76,4 @@ This chapter introduces transformer-based Large Language Models (LLMs), how they
 
 ## 11. Certification Exam
 
-(You can optionally keep track of the exam questions for practice.)
+
