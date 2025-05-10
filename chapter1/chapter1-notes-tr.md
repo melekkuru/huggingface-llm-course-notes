@@ -68,7 +68,6 @@ Kullanılacak temel araçlar:
 
 ## 7. Mini Test (Quick Quiz)
 
-(Not alınması gerekmez – kendi yanıtlarını kaydedebilirsin.)
 
 ---
 
