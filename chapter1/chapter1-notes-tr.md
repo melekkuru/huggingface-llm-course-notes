@@ -22,9 +22,25 @@ Kullanılacak temel araçlar:
 
 ## 2. Doğal Dil İşleme ve Büyük Dil Modelleri
 
-...
+• NLP (Doğal Dil İşleme), bilgisayarların insan dilini anlamasını, analiz etmesini ve üretmesini sağlayan alandır.  
+• Basit düzeyde sözcük türlerini ayırt etmekten, karmaşık sohbet sistemleri oluşturmaya kadar birçok alanda kullanılır.  
+• Eskiden NLP sistemleri belirli görevler için özel olarak eğitilmiş küçük modellerle çözülürdü (örneğin: sadece çeviri, sadece duygu analizi vs.).
+
+✔ LLM’ler, bu yaklaşıma devrim niteliğinde bir değişiklik getirdi:
+
+• Artık tek bir büyük model, çeviri, özetleme, soru-cevap, metin üretimi gibi farklı görevleri **tek başına** yapabiliyor.  
+• Bu modeller, veri miktarı büyüdükçe yeni özellikler kazanabiliyor (emergent abilities).  
+• Birden fazla görevi çözebildikleri için "genel amaçlı" hale geldiler.
 
 ---
+
+### 📌 Notlarım:
+
+• LLM’ler, eskiden ayrı ayrı sistemlerle çözülen işleri tek bir çatı altında toplar.  
+• Bu, hem geliştirme sürecini basitleştirir hem de kullanım açısından esneklik sağlar.  
+• Örneğin ChatGPT gibi sistemler, aynı modelle hem kod yazabilir, hem özet çıkarabilir, hem de sohbet edebilir.  
+• Bu esneklik sayesinde araştırmalar çok hızlandı ve herkes bu modellere erişebilir hale geldi.
+
 
 ## 3. Transformer'lar Ne İşe Yarar?
 
