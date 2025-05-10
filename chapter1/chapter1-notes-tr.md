@@ -5,7 +5,6 @@ Bu bölümde, transformer temelli büyük dil modellerinin (LLM) ne olduğunu, n
 ---
 
 ## 1. Giriş
-## 1. Giriş
 
 Bu kurs, transformer tabanlı büyük dil modellerini (LLM) anlamak ve uygulamak için hazırlanmıştır.
 
