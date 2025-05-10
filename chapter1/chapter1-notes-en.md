@@ -13,6 +13,7 @@ This course is designed to teach how to understand and apply transformer-based L
 • The course will take a hands-on approach using Hugging Face tools.
 
 Main tools covered in this course:
+
 • 🤗 Transformers  
 • 🤗 Datasets  
 • 🤗 Tokenizers  
