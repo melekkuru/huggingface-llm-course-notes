@@ -69,7 +69,6 @@ Main tools covered in this course:
 
 ## 7. Quick Quiz
 
-(No need to take notes – just note your answers if you like.)
 
 ---
 
