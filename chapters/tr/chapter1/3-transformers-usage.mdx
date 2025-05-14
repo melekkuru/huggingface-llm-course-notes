@@ -22,7 +22,7 @@ Transformers kütüphanesindeki en temel nesne `pipeline()` fonksiyonudur. Bu fo
 from transformers import pipeline
 
 classifier = pipeline("sentiment-analysis")
-classifier("Hayatım boyunca bir HuggingFace kursu bekledim.")
+classifier("I've been waiting for a HuggingFace course my whole life.")
 ```
 
 ```python
@@ -32,10 +32,9 @@ classifier("Hayatım boyunca bir HuggingFace kursu bekledim.")
 Birden fazla cümle de verebiliriz!
 
 ```python
-classifier([
-    "Hayatım boyunca bir HuggingFace kursu bekledim.",
-    "Bundan nefret ediyorum!"
-])
+classifier(
+    ["I've been waiting for a HuggingFace course my whole life.", "I hate this so much!"]
+)
 ```
 
 ```python
@@ -73,6 +72,139 @@ Bir metni bir pipeline'a verdiğinizde üç ana adım gerçekleşir:
 Bu pipelines, farklı görevler için önceden eğitilmiş modelleri ve ilgili ön/son işleme adımlarını içerir, bu da onları kullanmayı oldukça kolaylaştırır.
 
 ---
+## Zero-shot Sınıflandırma
+
+Şimdi, etiketlenmemiş metinleri sınıflandırmamız gereken daha zorlu bir görevi ele alalım.  
+Bu, gerçek dünya projelerinde oldukça yaygın bir senaryodur çünkü metinleri etiketlemek hem zaman alıcıdır hem de alan bilgisi gerektirir.
+
+Bu tür durumlar için `zero-shot-classification` pipeline'ı oldukça güçlüdür:  
+Bu pipeline sayesinde sınıflandırma için hangi etiketlerin kullanılacağını kendimiz belirleyebiliriz —  
+yani önceden eğitilmiş modelin varsayılan etiketlerine bağlı kalmak zorunda değiliz.
+
+Örneğin, daha önce modeli bir cümleyi **olumlu (positive)** veya **olumsuz (negative)** olarak sınıflandırırken gördük —  
+ama aslında model, istediğimiz **herhangi bir etiket setiyle** sınıflama yapabilir!
+
+```python
+from transformers import pipeline
+
+classifier = pipeline("zero-shot-classification")
+classifier(
+    "This is a course about the Transformers library",
+    candidate_labels=["education", "politics", "business"],
+)
+```
+```python
+{
+  'sequence': 'This is a course about the Transformers library',
+  'labels': ['education', 'business', 'politics'],
+  'scores': [0.84, 0.11, 0.04]
+}
+
+```
+Bu pipeline'a "zero-shot" denmesinin nedeni:
+Modeli kendi verin üzerinde ince ayar yapmana (fine-tune) gerek olmadan doğrudan kullanabilmen.
+Yani istediğin etiket listesini verip, her biri için olasılık skoru alabilirsin!
+
+## Metin Oluşturma (Text Generation)
+
+Şimdi bir pipeline kullanarak nasıl metin oluşturabileceğimizi görelim.  
+Buradaki temel fikir şudur: **bir başlangıç metni (prompt)** verirsiniz ve model, bu metni tamamlayacak şekilde geri kalanını oluşturur.
+
+Bu, telefonlardaki **otomatik tamamlama özelliğine** oldukça benzer bir yaklaşımdır.
+
+Not: Metin oluşturma süreci rastgelelik içerdiğinden, aşağıdaki çıktılarla birebir aynı sonucu almanız beklenmeyebilir — bu gayet normaldir.
+
+```python
+from transformers import pipeline
+
+generator = pipeline("text-generation")
+generator("In this course, we will teach you how to")
+```
+
+```python
+[
+  {'generated_text': 'In this course, we will teach you how to understand and use data flow and data interchange...'}
+]
+
+```
+num_return_sequences ve max_length parametrelerini kullanarak:
+
+Kaç adet farklı cümle oluşturulacağını
+Cümlelerin uzunluğunu (maksimum kelime sayısını) kontrol edebilirsiniz.
+
+```python
+generator(
+    "In this course, we will teach you how to",
+    max_length=30,
+    num_return_sequences=2,
+)
+
+```
+## Model Hub'dan Herhangi Bir Modeli Pipeline'da Kullanmak
+
+Önceki örneklerde her görev için **varsayılan model** kullanıldı.  
+Ama Hugging Face Hub'dan istediğin **belirli bir modeli** seçerek de bir pipeline içinde kullanabilirsin.
+
+Örneğin, metin oluşturma (text generation) görevinde özel bir model kullanmak istiyorsan:
+
+1. Model Hub’a git ([https://huggingface.co/models](https://huggingface.co/models))  
+2. Sol taraftan görev filtresi olarak `"text-generation"` seç  
+3. Bu görevi destekleyen modeller listelenecek
+
+Şimdi bu modeli birlikte deneyelim:  
+**`HuggingFaceTB/SmolLM2-360M`**
+
+Aşağıdaki şekilde, bu modeli doğrudan kullanabiliriz:
+
+```python
+from transformers import pipeline
+
+generator = pipeline("text-generation", model="HuggingFaceTB/SmolLM2-360M")
+generator(
+    "In this course, we will teach you how to",
+    max_length=30,
+    num_return_sequences=2,
+)
+```
+```python
+[
+  {'generated_text': 'In this course, we will teach you how to manipulate the world and ...'},
+  {'generated_text': 'In this course, we will teach you how to become an expert and ...'}
+]
+
+```
+Model Hub’da arama yaparken:
+
+Sol menüden dil filtresi uygulayabilirsin
+
+Örneğin Türkçe metin üretecek bir model bulabilirsin
+
+Çok dilli (multilingual) modelleri de deneyebilirsin!
+
+Seçtiğin modele tıkladığında genellikle bir deneme widget’ı da göreceksin.
+Modeli indirip kodla çalıştırmadan önce doğrudan tarayıcıda test edebilirsin.
+## Çıkarım Sağlayıcıları (Inference Providers)
+
+Hugging Face modellerini, doğrudan tarayıcınızdan denemenizi sağlayan sistemlere **inference providers** denir.
+
+Yani herhangi bir modelin sayfasına gidip bir metin yazarsanız, model bu girdiye göre anlık cevap üretir.  
+Bu sayfa üzerinden modeli **çalıştırabilir**, çıktıyı anında görebilirsiniz — kod yazmadan!
+
+![inference widget örneği](https://huggingface.co/course/static/chapter1/widget-example.png)
+
+Bu çıkarım sağlayıcılarının çalıştığı altyapı, Hugging Face’in sunduğu bir servis olarak mevcuttur ve:
+
+- Ücretsiz olarak herkesin kullanımına açık kısmı vardır  
+- Daha yüksek ölçekli iş akışları için **ücretli sürümleri** de vardır
+
+Eğer kurumsal düzeyde model çalıştırmak istiyorsan,  
+[pricing](https://huggingface.co/pricing) sayfasına göz atabilirsin.
+
+✏️ **Deneyin!**  
+Hugging Face'de bir modele gidin ve inference widget üzerinden bir metin girin.  
+Modelin cevabını gözlemleyin ve hangi görev için nasıl çalıştığını anlamaya çalışın.
+
+
 
 ## Sonuç
 
