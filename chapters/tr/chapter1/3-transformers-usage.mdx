@@ -1,1 +1,82 @@
+## 📄 3. Transformer'lar Neler Yapabilir?
+
+### Transformer'lar Her Yerde!
+
+Transformer modelleri, doğal dil işleme (NLP), bilgisayarla görme, ses işleme ve daha birçok alanda çeşitli görevleri çözmek için kullanılır. Hugging Face ve Transformer modellerini kullanan ve topluluğa katkıda bulunan bazı şirketler ve kuruluşlar şunlardır:
+
+![Hugging Face kullanan şirketler](https://huggingface.co/course/static/chapter1/transformers-companies.png)
+
+Transformers kütüphanesi, bu paylaşılan modelleri oluşturma ve kullanma işlevselliğini sağlar. Model Hub, herkesin indirebileceği ve kullanabileceği milyonlarca önceden eğitilmiş model içerir. Ayrıca, kendi modellerinizi de Hub'a yükleyebilirsiniz!
+
+⚠️ Hugging Face Hub, yalnızca Transformer modelleriyle sınırlı değildir. Herkes istediği türde modeli veya veri kümesini paylaşabilir! Tüm mevcut özelliklerden yararlanmak için bir huggingface.co hesabı oluşturun.
+
+Transformer modellerinin nasıl çalıştığını derinlemesine incelemeden önce, bazı ilginç NLP problemlerini çözmek için nasıl kullanılabileceklerine dair birkaç örneğe bakalım.
+
+---
+
+## Pipelines ile Çalışmak
+
+Transformers kütüphanesindeki en temel nesne `pipeline()` fonksiyonudur. Bu fonksiyon, bir modeli gerekli ön işleme ve son işleme adımlarıyla birleştirerek, herhangi bir metni doğrudan girdi olarak alıp anlaşılır bir yanıt almamızı sağlar:
+
+```python
+from transformers import pipeline
+
+classifier = pipeline("sentiment-analysis")
+classifier("Hayatım boyunca bir HuggingFace kursu bekledim.")
+```
+
+```python
+[{'label': 'POSITIVE', 'score': 0.9598}]
+```
+
+Birden fazla cümle de verebiliriz!
+
+```python
+classifier([
+    "Hayatım boyunca bir HuggingFace kursu bekledim.",
+    "Bundan nefret ediyorum!"
+])
+```
+
+```python
+[
+    {'label': 'POSITIVE', 'score': 0.9598},
+    {'label': 'NEGATIVE', 'score': 0.9994}
+]
+```
+
+Varsayılan olarak, bu pipeline, İngilizce duygu analizi için ince ayar yapılmış belirli bir önceden eğitilmiş modeli seçer. `classifier` nesnesini oluşturduğunuzda model indirilir ve önbelleğe alınır. Komutu tekrar çalıştırırsanız, önbelleğe alınmış model kullanılır ve modeli tekrar indirmenize gerek kalmaz.
+
+Bir metni bir pipeline'a verdiğinizde üç ana adım gerçekleşir:
+
+1. Metin, modelin anlayabileceği bir formata dönüştürülür (ön işleme).
+2. Ön işlenmiş girdiler modele aktarılır.
+3. Modelin tahminleri, anlaşılır hale getirilmesi için son işleme tabi tutulur.
+
+---
+
+## Farklı Modlar İçin Mevcut Pipelines
+
+`pipeline()` fonksiyonu, metin, görüntü, ses ve hatta çok modlu görevlerle çalışmanıza olanak tanıyan birden fazla modu destekler. Bu kursta metin görevlerine odaklanacağız, ancak transformer mimarisinin potansiyelini anlamak faydalıdır, bu yüzden kısaca özetleyelim.
+
+İşte mevcut olanların bir özeti:
+
+* **Metin Sınıflandırma**: Duygu analizi, konu sınıflandırması vb.
+* **Adlandırılmış Varlık Tanıma (NER)**: Metindeki özel isimleri tanıma.
+* **Soru-Cevap**: Bir bağlam verildiğinde sorulara yanıt verme.
+* **Metin Oluşturma**: Belirli bir başlangıç metnine dayanarak yeni metinler üretme.
+* **Özetleme**: Uzun metinleri kısa özetlere dönüştürme.
+* **Çeviri**: Metni bir dilden başka bir dile çevirme.
+* **Görüntü Sınıflandırma**: Görüntüleri belirli kategorilere ayırma.
+* **Ses Tanıma**: Ses verilerini metne dönüştürme.
+
+Bu pipelines, farklı görevler için önceden eğitilmiş modelleri ve ilgili ön/son işleme adımlarını içerir, bu da onları kullanmayı oldukça kolaylaştırır.
+
+---
+
+## Sonuç
+
+Transformer modelleri, çok çeşitli görevleri çözmek için güçlü araçlardır. Hugging Face'in Transformers kütüphanesi ve Model Hub'ı, bu modelleri kullanmayı ve paylaşmayı kolaylaştırır. `pipeline()` fonksiyonu, bu modellerle çalışmayı daha da basitleştirerek, karmaşık ön işleme ve son işleme adımlarını sizin için halleder.
+
+
 
