@@ -204,11 +204,213 @@ Eğer kurumsal düzeyde model çalıştırmak istiyorsan,
 Hugging Face'de bir modele gidin ve inference widget üzerinden bir metin girin.  
 Modelin cevabını gözlemleyin ve hangi görev için nasıl çalıştığını anlamaya çalışın.
 
+## Boşluk Doldurma (Mask Filling)
 
+`fill-mask` pipeline'ı, cümledeki eksik kelimeyi tahmin etme görevini yerine getirir.
 
-## Sonuç
+Örneğin:
 
-Transformer modelleri, çok çeşitli görevleri çözmek için güçlü araçlardır. Hugging Face'in Transformers kütüphanesi ve Model Hub'ı, bu modelleri kullanmayı ve paylaşmayı kolaylaştırır. `pipeline()` fonksiyonu, bu modellerle çalışmayı daha da basitleştirerek, karmaşık ön işleme ve son işleme adımlarını sizin için halleder.
+```python
+from transformers import pipeline
+
+unmasker = pipeline("fill-mask")
+unmasker("This course will teach you all about <mask> models.", top_k=2)
+
+```
+```python
+[
+  {'sequence': 'This course will teach you all about mathematical models.',
+   'score': 0.1961,
+   'token': 30412,
+   'token_str': ' mathematical'},
+  {'sequence': 'This course will teach you all about computational models.',
+   'score': 0.0405,
+   'token': 38163,
+   'token_str': ' computational'}
+]
+Burada <mask> yerine, modelin en olası gördüğü kelimeler getirilir.
+top_k=2 parametresi, en yüksek olasılığa sahip 2 tahmini göstermesini sağlar.
+
+Not: Kullanılan <mask> kelimesi, modele özgü olabilir.
+Bazı modeller farklı mask token'ları kullanır (örneğin [MASK]).
+Bu nedenle başka bir modelle çalışırken mask token'ının ne olduğunu kontrol etmelisin.
+
+Bunu modelin Hugging Face sayfasındaki inference widget’ında görebilirsin.
+
+✏️ Deneyin!
+bert-base-cased modelini Hugging Face Model Hub’da arayın.
+Inference API widget’ında bu modelin mask token’ını bulun.
+Aynı örnek cümlede nasıl bir tahminde bulunduğunu gözlemleyin.
+
+```
+## 6. Adlandırılmış Varlık Tanıma (Named Entity Recognition - NER)
+
+`ner` pipeline'ı, metindeki kişi adları, yer adları ve organizasyonlar gibi özel varlıkları tanımak için kullanılır.
+
+```python
+from transformers import pipeline
+
+ner = pipeline("ner", grouped_entities=True)
+ner("My name is Sylvain and I work at Hugging Face in Brooklyn.")
+```
+
+```python
+[
+  {'entity_group': 'PER', 'score': 0.9981, 'word': 'Sylvain', 'start': 11, 'end': 18}, 
+  {'entity_group': 'ORG', 'score': 0.9796, 'word': 'Hugging Face', 'start': 33, 'end': 45}, 
+  {'entity_group': 'LOC', 'score': 0.9932, 'word': 'Brooklyn', 'start': 49, 'end': 57}
+]
+```
+
+Burada model doğru şekilde tanımlamıştır:
+- Sylvain → kişi (PER)
+- Hugging Face → organizasyon (ORG)
+- Brooklyn → yer (LOC)
+
+💡 `grouped_entities=True` sayesinde, aynı varlığa ait kelimeler (örneğin "Hugging" ve "Face") birlikte gruplanır.
+
+İleride göreceğimiz gibi bazı kelimeler tokenizer aşamasında parçalara bölünür (örneğin "Sylvain" → "S", "##yl", "##va", "##in").
+Ama pipeline bu parçaları post-processing adımında doğru şekilde birleştirir.
+
+✏️ **Deneyin!**  
+Model Hub’da “part-of-speech tagging” (POS) yapabilen bir İngilizce model bulun.  
+Aynı cümlede bu modelin nasıl etiketleme yaptığını inceleyin.
+
+## 7. Soru-Cevaplama (Question Answering)
+
+Bu pipeline, belirli bir bağlam (context) verildiğinde **sorulara cevap verir.**
+Model, cevabı doğrudan bağlamdan **çıkarım yoluyla** bulur — yani yeni bir metin üretmez.
+
+```python
+from transformers import pipeline
+
+question_answerer = pipeline("question-answering")
+question_answerer(
+    question="Where do I work?",
+    context="My name is Sylvain and I work at Hugging Face in Brooklyn",
+)
+```
+
+```python
+{'score': 0.6385, 'start': 33, 'end': 45, 'answer': 'Hugging Face'}
+```
+
+✏️ **Deneyin!**
+Farklı bir bağlam ve soru yazarak deneyin. Modelin cevabı doğru şekilde çıkardığını kontrol edin.
+
+---
+
+## 8. Özetleme (Summarization)
+
+Özetleme (summarization), bir metni **daha kısa** bir biçimde yeniden yazar, ancak **önemli bilgileri korur.**
+
+```python
+from transformers import pipeline
+
+summarizer = pipeline("summarization")
+summarizer(
+    """
+    America has changed dramatically during recent years. Not only has the number of 
+    graduates in traditional engineering disciplines such as mechanical, civil, 
+    electrical, chemical, and aeronautical engineering declined, but in most of 
+    the premier American universities engineering curricula now concentrate on 
+    and encourage largely the study of engineering science...
+    """
+)
+```
+
+```python
+[{'summary_text': 'America has changed dramatically... the number of engineering graduates in the U.S. has declined...'}]
+```
+
+✏️ **Deneyin!**
+Kendi uzun metninizi yazın ve modelin verdiği özeti inceleyin. `max_length` veya `min_length` parametrelerini değiştirerek özeti kontrol edin.
+
+---
+
+## 9. Çeviri (Translation)
+
+Çeviri görevinde, varsayılan model kullanılabileceği gibi **Model Hub’dan bir çeviri modeli** de seçilebilir.
+
+```python
+from transformers import pipeline
+
+translator = pipeline("translation", model="Helsinki-NLP/opus-mt-fr-en")
+translator("Ce cours est produit par Hugging Face.")
+```
+
+```python
+[{'translation_text': 'This course is produced by Hugging Face.'}]
+```
+
+✏️ **Deneyin!**
+Model Hub'da farklı diller için çeviri modelleri bulun ve aynı cümleyi birkaç farklı dile çevirtin.
+
+---
+
+## 10. Görüntü ve Ses Pipeline’ları (Image and Audio Pipelines)
+
+### 📷 Görüntü Sınıflandırma
+
+```python
+from transformers import pipeline
+
+image_classifier = pipeline(
+    task="image-classification", model="google/vit-base-patch16-224"
+)
+result = image_classifier(
+    "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/pipeline-cat-chonk.jpeg"
+)
+print(result)
+```
+
+```python
+[
+  {'label': 'lynx, catamount', 'score': 0.43},
+  {'label': 'cougar, puma...', 'score': 0.03},
+  ...
+]
+```
+
+### Otomatik Konuşma Tanıma (ASR)
+
+```python
+from transformers import pipeline
+
+transcriber = pipeline(
+    task="automatic-speech-recognition", model="openai/whisper-large-v3"
+)
+result = transcriber(
+    "https://huggingface.co/datasets/Narsil/asr_dummy/resolve/main/mlk.flac"
+)
+print(result)
+```
+
+```python
+{'text': 'I have a dream that one day this nation will rise up...'}
+```
+
+---
+
+## 11. Çok Kaynaklı Verileri Birleştirme
+
+Transformer modelleri farklı veri türlerinden gelen bilgileri **birleştirip işleyebilir.**
+
+Kullanım örnekleri:
+- Birden fazla veritabanı veya kaynaktan arama yapmak
+- Metin, görsel, ses gibi farklı veri formatlarını birleştirmek
+- Doküman ve metaverilerle bütüncül yanıt oluşturmak
+
+Bu tür yetenekler, çok modlu (multimodal) sistemlerin temelidir.
+
+---
+
+## 12. Sonuç (Conclusion)
+
+Bu bölümde gösterilen pipeline’lar **demonstrasyon amaçlı** hazırlanmıştır.
+Her biri belirli görevler için programlanmıştır ve görev dışında kullanılamazlar.
+
+Bir sonraki bölümde `pipeline()` fonksiyonunun iç yapısını ve nasıl özelleştirilebileceğini öğreneceğiz ✨
 
 
 
